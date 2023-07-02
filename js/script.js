@@ -7,23 +7,27 @@ let operador;
 let decimal = false;
 var neg = false;
 let resultado;
-let bandeira = true;
+let bandeira = true; // para vericar se ja subtituiu o 0 que aparece na tela maior assim que o app eh iniciado
 let quatidadeDigitos = 0;
 
-
-function limpar() {
-    telaMaior.innerText = 0;
-    telaMenor.innerText = "";
+function zerar() {
     primeiroNumero = undefined;
+    operador = undefined;
     segundoNumero = undefined;
-    resultado = undefined;
-    decimal = false;
+    decimal = !Number.isInteger(resultado);
     neg = false;
+    bandeira = true;
     quatidadeDigitos = 0;
 }
 
+function limparTelas() {
+    telaMaior.innerText = 0;
+    telaMenor.innerText = "";
+    zerar();
+}
+
 function calcular() {
-    if (decimal)
+    if (!Number.isInteger(segundoNumero))
         segundoNumero = parseFloat(telaMaior.innerText);
     else
         segundoNumero = parseInt(telaMaior.innerText);
@@ -53,20 +57,18 @@ function calcular() {
             break;
     }
 
-    if (resultado != undefined) {
+    if (resultado != undefined ) {
         telaMenor.innerText = primeiroNumero + operador + segundoNumero;
         telaMaior.innerText = resultado;
-        primeiroNumero = undefined;
-        segundoNumero = undefined;
-        resultado = undefined;
-        bandeira = true;
+        zerar();
     }
 
 
 }
 
 function operacao(tipo) {
-    if (decimal)
+
+    if (!Number.isInteger(primeiroNumero))
         primeiroNumero = parseFloat(telaMaior.innerText);
     else
         primeiroNumero = parseInt(telaMaior.innerText);
@@ -76,45 +78,52 @@ function operacao(tipo) {
 
     telaMaior.innerText = primeiroNumero;
     quatidadeDigitos = 0;
+    decimal = false;
+    bandeira = true;
 }
 
 function virgula() {
-    if (!decimal)
-        telaMaior.innerText += "."
-    decimal = true;
+
+    if (!decimal) {
+        telaMaior.innerText += ".";
+        decimal = true;
+        bandeira = false;
+    }
+
+
+
 }
 
+
 function negPos() {
-    if (decimal)
+    if (!Number.isInteger(primeiroNumero))
         primeiroNumero = parseFloat(telaMaior.innerText);
     else
         primeiroNumero = parseInt(telaMaior.innerText);
 
-    if(primeiroNumero != "0")
-            primeiroNumero *=-1;
-    
-    escrever(primeiroNumero);    
+    if (primeiroNumero != "0") {
+        primeiroNumero *= -1;
+
+        telaMaior.innerText = primeiroNumero;
+    }
+
+
 }
 
 function escrever(digito) {
-    quatidadeDigitos++;
 
-    if (quatidadeDigitos < 10 && telaMaior.innerText.length < 10) {
-        if (primeiroNumero == undefined) {
-            if (telaMaior.innerText == 0 || resultado != undefined)
-                telaMaior.innerText = digito;
-            else
-                telaMaior.innerText += digito;
+    digito += ""; // força variavia ser string para fazer validaçao da quantidade de digitos
+    if (telaMaior.innerText.length + digito.length < 8) {
+        if (telaMaior.innerText == "0" || bandeira) {
+            telaMaior.innerText = digito;
+            bandeira = false;
         }
         else {
-            if (telaMaior.innerText == primeiroNumero || bandeira) {
-                telaMaior.innerText = digito;
-                bandeira = false;
-            }
-            else {
-                telaMaior.innerText += digito;
-            }
-
+            telaMaior.innerText += digito;
         }
+
+
+
+
     }
 }
