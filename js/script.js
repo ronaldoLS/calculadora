@@ -8,7 +8,7 @@ let decimal = false;
 var neg = false;
 let resultado;
 let bandeira = true; // para vericar se ja subtituiu o 0 que aparece na tela maior assim que o app eh iniciado
-let quatidadeDigitos = 0;
+
 
 function zerar() {
     primeiroNumero = undefined;
@@ -17,7 +17,7 @@ function zerar() {
     decimal = false;
     neg = false;
     bandeira = true;
-    quatidadeDigitos = 0;
+
 }
 
 function limparTelas() {
@@ -26,11 +26,11 @@ function limparTelas() {
     zerar();
 }
 
-function calcular() {
-    if (!Number.isInteger(segundoNumero))
-        segundoNumero = parseFloat(telaMaior.innerText);
+function calcular(segNum = segundoNumero) {
+    if (!Number.isInteger(Number(segundoNumero)))
+        segundoNumero = segNum != undefined ? segNum : parseFloat(telaMaior.innerText);
     else
-        segundoNumero = parseInt(telaMaior.innerText);
+        segundoNumero = segNum != undefined ? segNum : parseInt(telaMaior.innerText);
 
     switch (operador) {
         case "+":
@@ -43,12 +43,6 @@ function calcular() {
             resultado = primeiroNumero * segundoNumero
             break;
         case "/":
-            resultado = primeiroNumero / segundoNumero
-            break;
-        case "+-":
-            resultado = primeiroNumero / segundoNumero
-            break;
-        case "%":
             resultado = primeiroNumero / segundoNumero
             break;
 
@@ -79,18 +73,18 @@ function operacao(tipo) {
     operador = tipo;
 
     telaMaior.innerText = primeiroNumero;
-    quatidadeDigitos = 0;
+
     decimal = false;
     bandeira = true;
 }
 
 function virgula() {
-   
+
     if (!decimal) {
-        if (telaMaior.innerText != "0"){
-            if(Number.isInteger(Number(telaMaior.innerText)))
+        if (telaMaior.innerText != "0") {
+            if (Number.isInteger(Number(telaMaior.innerText)))
                 telaMaior.innerText += ".";
-        }  
+        }
         else
             telaMaior.innerText = "0.";
         decimal = true;
@@ -111,6 +105,19 @@ function negPos() {
 
         telaMaior.innerText = primeiroNumero;
     }
+}
+
+function porcentagem() {
+    if (!Number.isInteger(primeiroNumero))
+        primeiroNumero = parseFloat(telaMaior.innerText);
+    else
+        primeiroNumero = parseInt(telaMaior.innerText);
+
+
+    if (operador == "+" || operador == "-")
+        calcular(primeiroNumero * (primeiroNumero / 100));
+    else if (operador == "x" || operador == "/")
+        calcular((primeiroNumero / 100));
 }
 
 function escrever(digito) {
