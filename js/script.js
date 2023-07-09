@@ -14,7 +14,7 @@ function zerar() {
     primeiroNumero = undefined;
     operador = undefined;
     segundoNumero = undefined;
-    decimal = !Number.isInteger(resultado);
+    decimal = false;
     neg = false;
     bandeira = true;
     quatidadeDigitos = 0;
@@ -57,13 +57,15 @@ function calcular() {
             break;
     }
 
-    if (resultado != undefined ) {
+    if (resultado != undefined && resultado != NaN && operador != undefined) {
         telaMenor.innerText = primeiroNumero + operador + segundoNumero;
-        telaMaior.innerText = resultado;
+        telaMaior.innerText = limitarDigitos(resultado, 9);
         zerar();
     }
+}
 
-
+function limitarDigitos(numero, digitos) {
+    return parseFloat(numero.toPrecision(digitos));
 }
 
 function operacao(tipo) {
@@ -83,14 +85,17 @@ function operacao(tipo) {
 }
 
 function virgula() {
-
+   
     if (!decimal) {
-        telaMaior.innerText += ".";
+        if (telaMaior.innerText != "0"){
+            if(Number.isInteger(Number(telaMaior.innerText)))
+                telaMaior.innerText += ".";
+        }  
+        else
+            telaMaior.innerText = "0.";
         decimal = true;
         bandeira = false;
     }
-
-
 
 }
 
@@ -106,8 +111,6 @@ function negPos() {
 
         telaMaior.innerText = primeiroNumero;
     }
-
-
 }
 
 function escrever(digito) {
@@ -121,9 +124,5 @@ function escrever(digito) {
         else {
             telaMaior.innerText += digito;
         }
-
-
-
-
     }
 }
